@@ -8,9 +8,9 @@ void main() {
   group('CounterDisplay', () {
     testWidgets('renders the counter value', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: CounterDisplay(counter: const Counter(value: 42)),
+            body: CounterDisplay(counter: Counter(value: 42)),
           ),
         ),
       );
@@ -21,9 +21,9 @@ void main() {
 
     testWidgets('shows the description label', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: CounterDisplay(counter: const Counter(value: 0)),
+            body: CounterDisplay(counter: Counter(value: 0)),
           ),
         ),
       );

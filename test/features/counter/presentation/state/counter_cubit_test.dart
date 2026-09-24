@@ -48,7 +48,7 @@ void main() {
       build: build,
       setUp: () => when(() => getCounter(const NoParams())).thenAnswer(
         (_) async =>
-            Result<Counter, Failure>.failure(CacheFailure(message: 'fail')),
+            const Result<Counter, Failure>.failure(CacheFailure(message: 'fail')),
       ),
       act: (CounterCubit cubit) => cubit.loadCounter(),
       expect: () => const <CounterState>[
@@ -74,7 +74,7 @@ void main() {
       'emits [loading, error] when increment fails',
       build: build,
       setUp: () => when(() => incrementCounter(const NoParams())).thenAnswer(
-        (_) async => Result<Counter, Failure>.failure(
+        (_) async => const Result<Counter, Failure>.failure(
           UnknownFailure(message: 'err'),
         ),
       ),

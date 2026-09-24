@@ -58,7 +58,7 @@ class ArticlesRepositoryImpl implements ArticlesRepository {
           (await mockDataSource.getArticles(page)).toEntity(),
         );
       }
-      return Result.failure(
+      return const Result.failure(
         NetworkFailure(message: 'No network and no cached articles.'),
       );
     } on CacheException catch (e) {

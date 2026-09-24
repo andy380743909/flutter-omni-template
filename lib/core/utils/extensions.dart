@@ -1,4 +1,5 @@
 /// Small, reusable Dart extensions shared across the codebase.
+library;
 
 /// Extensions on [String].
 extension StringExtension on String {

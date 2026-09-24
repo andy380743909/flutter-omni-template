@@ -19,19 +19,19 @@ void main() {
 
   ArticlesCubit build() => ArticlesCubit(getArticles: getArticles);
 
-  final Article a1 = const Article(id: 1, title: 't', body: 'b', author: 'a');
-  final Article a2 =
-      const Article(id: 2, title: 't2', body: 'b2', author: 'a2');
-  final ArticlesPage page1 =
+  const Article a1 = Article(id: 1, title: 't', body: 'b', author: 'a');
+  const Article a2 =
+      Article(id: 2, title: 't2', body: 'b2', author: 'a2');
+  const ArticlesPage page1 =
       ArticlesPage(items: <Article>[a1], page: 1, hasMore: true);
-  final ArticlesPage page2 =
+  const ArticlesPage page2 =
       ArticlesPage(items: <Article>[a2], page: 2, hasMore: false);
 
   blocTest<ArticlesCubit, ArticlesState>(
     'emits [loading, loaded] when loadFirstPage succeeds',
     build: build,
     setUp: () => when(() => getArticles(const GetArticlesParams(1))).thenAnswer(
-      (_) async => Result<ArticlesPage, Failure>.success(page1),
+      (_) async => const Result<ArticlesPage, Failure>.success(page1),
     ),
     act: (ArticlesCubit cubit) => cubit.loadFirstPage(),
     expect: () => <ArticlesState>[
@@ -45,7 +45,7 @@ void main() {
     build: build,
     setUp: () => when(() => getArticles(const GetArticlesParams(1))).thenAnswer(
       (_) async =>
-          Result<ArticlesPage, Failure>.failure(ServerFailure(message: 'fail')),
+          const Result<ArticlesPage, Failure>.failure(ServerFailure(message: 'fail')),
     ),
     act: (ArticlesCubit cubit) => cubit.loadFirstPage(),
     expect: () => const <ArticlesState>[
@@ -59,7 +59,7 @@ void main() {
     build: build,
     seed: () => ArticlesLoaded(articles: <Article>[a1], page: 1, hasMore: true),
     setUp: () => when(() => getArticles(const GetArticlesParams(2))).thenAnswer(
-      (_) async => Result<ArticlesPage, Failure>.success(page2),
+      (_) async => const Result<ArticlesPage, Failure>.success(page2),
     ),
     act: (ArticlesCubit cubit) => cubit.loadMore(),
     expect: () => <ArticlesState>[

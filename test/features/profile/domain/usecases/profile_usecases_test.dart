@@ -41,7 +41,7 @@ void main() {
   test('propagates a failure', () async {
     when(() => repository.getProfile()).thenAnswer(
       (_) async =>
-          Result<UserProfile, Failure>.failure(ServerFailure(message: 'boom')),
+          const Result<UserProfile, Failure>.failure(ServerFailure(message: 'boom')),
     );
 
     final Result<UserProfile, Failure> result =

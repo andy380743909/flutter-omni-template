@@ -43,7 +43,7 @@ void main() {
     build: build,
     setUp: () => when(() => getProfile(const NoParams())).thenAnswer(
       (_) async =>
-          Result<UserProfile, Failure>.failure(ServerFailure(message: 'fail')),
+          const Result<UserProfile, Failure>.failure(ServerFailure(message: 'fail')),
     ),
     act: (ProfileCubit cubit) => cubit.loadProfile(),
     expect: () => const <ProfileState>[

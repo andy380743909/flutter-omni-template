@@ -14,7 +14,7 @@ void main() {
 
     testWidgets('renders name and email', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(body: ProfileCard(profile: profile)),
         ),
       );
@@ -28,7 +28,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(body: ProfileCard(profile: profile)),
         ),
       );

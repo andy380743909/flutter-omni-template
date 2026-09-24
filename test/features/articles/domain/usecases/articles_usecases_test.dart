@@ -41,7 +41,7 @@ void main() {
   test('propagates a failure', () async {
     when(() => repository.getArticles(1)).thenAnswer(
       (_) async =>
-          Result<ArticlesPage, Failure>.failure(ServerFailure(message: 'boom')),
+          const Result<ArticlesPage, Failure>.failure(ServerFailure(message: 'boom')),
     );
 
     final Result<ArticlesPage, Failure> result =

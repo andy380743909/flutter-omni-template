@@ -15,7 +15,7 @@ void main() {
 
     testWidgets('renders title and author', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(body: ArticleListItem(article: article)),
         ),
       );
@@ -29,7 +29,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(body: ArticleListItem(article: article)),
         ),
       );

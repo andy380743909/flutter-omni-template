@@ -19,7 +19,7 @@ void main() {
     });
 
     test('toJson round-trips', () {
-      final CounterModel model = const CounterModel(value: 7);
+      const CounterModel model = CounterModel(value: 7);
       expect(model.toJson(), <String, dynamic>{'value': 7});
     });
 

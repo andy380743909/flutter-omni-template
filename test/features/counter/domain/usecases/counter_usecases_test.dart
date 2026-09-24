@@ -39,7 +39,7 @@ void main() {
     test('propagates a failure', () async {
       when(() => repository.getCounter()).thenAnswer(
         (_) async =>
-            Result<Counter, Failure>.failure(CacheFailure(message: 'boom')),
+            const Result<Counter, Failure>.failure(CacheFailure(message: 'boom')),
       );
 
       final Result<Counter, Failure> result =
@@ -65,7 +65,7 @@ void main() {
 
     test('propagates a failure', () async {
       when(() => repository.increment()).thenAnswer(
-        (_) async => Result<Counter, Failure>.failure(
+        (_) async => const Result<Counter, Failure>.failure(
           UnknownFailure(message: 'unknown'),
         ),
       );
