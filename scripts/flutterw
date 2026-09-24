@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# scripts/flutterw — project-local Flutter/Dart toolchain wrapper.
+#
+# Single source of truth for the toolchain environment so we never hit the
+# cache-resolution / proxy problems that used to force a manual cache wipe.
+#
+# Every Bash call in this project should go through this wrapper instead of
+# calling `flutter` / `dart` directly, e.g.:
+#     bash scripts/flutterw pub get
+#     bash scripts/flutterw test
+#     bash scripts/flutterw analyze --fatal-warnings
+#     bash scripts/flutterw dart analyze --fatal-warnings
+#     bash scripts/flutterw dart format --set-exit-if-changed .
+#
+# Why these env vars:
+#   * PATH        -> pin the Flutter SDK to the project-stable location.
+#   * PUB_CACHE   -> keep pub deps inside the repo (.pub-cache, gitignored),
+#                   so they are regenerable artifacts, not personal files.
+#   * proxy unset -> `flutter test` opens localhost/WebSocket; a proxy would
+#                    hijack them and make tests hang.
+set -euo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export FLUTTER_ROOT="/Users/andy/flutter-sdk"
+export PATH="$FLUTTER_ROOT/bin:$PATH"
+export PUB_CACHE="$PROJECT_ROOT/.pub-cache"
+unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
+
+# Dispatch:
+#   `flutterw dart ...` -> dart SDK
+#   `flutterw sh -c '...'` / `flutterw env` -> run a shell with the env set
+#                                      (handy for debugging the toolchain env)
+#   everything else -> flutter
+first="${1:-flutter}"
+if [ "$first" = "dart" ]; then
+  shift
+  exec "$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart" "$@"
+elif [ "$first" = "sh" ] || [ "$first" = "env" ]; then
+  shift
+  exec /bin/sh "$@"
+fi
+
+exec flutter "$@"
