@@ -31,8 +31,10 @@ dependencies:
   # Logging
   logger: ^2.4.0
 
-  # Localization helpers (used by flutter gen-l10n)
-  intl: ^0.19.0
+  # Localization helpers (used by flutter gen-l10n).
+  # NOTE: Flutter 3.47.x's flutter_localizations (sdk) requires intl ^0.20.3,
+  # so this must stay >= 0.20.3 to resolve `flutter pub get`.
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:
