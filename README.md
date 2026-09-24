@@ -30,8 +30,9 @@
 | Web 构建 | `flutter build web --release` | ✅ 成功 |
 | macOS 构建 | `flutter build macos --release` | ✅ 成功 |
 | iOS 构建 | `flutter build ios --release --no-codesign` | ✅ 成功（未签名，仅编译验证） |
+| OpenHarmony 运行 | `flutter build hap` + 模拟器 | ✅ 白屏修复后 Counter / Profile / Articles 三页均正常渲染（Flutter-OH 环境实测） |
 
-⚠️ **本机（macOS）只能实测 web / macOS / iOS 三个平台的构建**；Android / Windows / Linux 因缺对应 OS 与 SDK 未在本机编译，但 CI 会分别用 ubuntu（android/linux）与 windows runner 构建，且三者共享同一套 Dart 代码（已在本机跨平台编译验证）。请按 `docs/ACCEPTANCE.md` 做一次全平台验收。
+⚠️ **本机（macOS）只能实测 web / macOS / iOS 三个平台的构建**；Android / Windows / Linux 因缺对应 OS 与 SDK 未在本机编译，但 CI 会分别用 ubuntu（android/linux）与 windows runner 构建，且三者共享同一套 Dart 代码（已在本机跨平台编译验证）。OpenHarmony 需在装有 Flutter-OH SDK 的环境实测，详见下方「鸿蒙（OpenHarmony / HarmonyOS NEXT）单独步骤」。请按 `docs/ACCEPTANCE.md` 做一次全平台验收。
 
 🛠 **为让"每平台都能跑 hello world"而修掉的阻断问题**（均为真实编译错误）：
 - 各 usecase / 测试文件漏 `import '.../result.dart'`，且 `Result.success/failure` 工厂未声明 `const` → 改显式 import + `const factory`；
@@ -159,17 +160,67 @@ iOS 签名用 `match`：本地先 `bundle exec fastlane match init`，CI 配置 
 
 ---
 
-## 鸿蒙（HarmonyOS）单独步骤
+## 鸿蒙（OpenHarmony / HarmonyOS NEXT）单独步骤
 
-> ⚠️ **版本分裂**：鸿蒙由 OpenHarmony SIG 社区维护的 Flutter-OH 提供，**版本号与官方 Flutter 不对应、且落后**（官方 3.47 无鸿蒙版，社区最新约 3.35.7dev）。HarmonyOS NEXT 需 **API 12（5.0.0(12)）及以上**，请用 `3.22.0-ohos` 等社区稳定版，**勿复用本模板钉的官方 `3.47.5`**。详见 `docs/CI-CD.md`。
+> ⚠️ **版本分裂**：鸿蒙由 OpenHarmony SIG 社区维护的 Flutter-OH 提供，版本号与官方 Flutter 不对应、且落后（官方 3.47 无鸿蒙版，社区最新约 3.35.x）。HarmonyOS NEXT 需 **API 12（5.0.0(12)）及以上**。本模板钉的官方 `3.47.5` 不含鸿蒙；鸿蒙需单独的 Flutter-OH SDK 环境（见 `docs/CI-CD.md`）。
 
-鸿蒙**不在**官方 Flutter 之内，需 `flutter create` 之外的独立流程（且需要 Flutter-OH SDK 环境）：
+> 🛠 **本仓库已包含 `ohos/` 工程脚手架**（非 `flutter create` 生成），clone 后在装有 Flutter-OH 的机器直接构建即可。
+
+### 1. 环境准备
+
+| 组件 | 作用 | 说明 |
+|------|------|------|
+| **Flutter-OH SDK** | 鸿蒙版 Flutter 工具链 | 克隆到本地，把其 `bin/` 加入 PATH（如 `/Users/andy/flutter-ohos/bin`） |
+| **OpenHarmony / HarmonyOS SDK** | 提供 `hdc` / `hvigorw` / `ohpm` | 经 DevEco Studio → SDK Manager 安装；`ohos/local.properties` 的 `hwsdk.dir` 已指向本机 SDK 根 |
+| **command-line-tools** | 提供 `hvigorw`、`ohpm` | 其 `bin/` 已在 PATH（如 `command-line-tools/bin`） |
+| **SDK toolchains** | 提供 `hdc` | 其 `openharmony/toolchains/` 目录需**单独**加入 PATH（见下） |
+
+环境变量（写入 `~/.zshrc`）：
 
 ```bash
-# 在装有 Flutter-OH SDK 的机器上，把 Flutter-OH 的 flutter 放到 PATH
-flutter create --platforms=ohos .
-flutter build hap --release
+# Flutter-OH
+export PATH="/Users/andy/flutter-ohos/bin:$PATH"
+# HarmonyOS SDK 的 toolchains（hdc 在此，不在 command-line-tools/bin 里）
+export PATH="$PATH:/Users/andy/Projects/command-line-tools/sdk/default/openharmony/toolchains"
+# 让 Flutter-OH 稳定定位 SDK 根
+export HOS_SDK_HOME="/Users/andy/Projects/command-line-tools/sdk/default"
 ```
+
+> 注：DevEco 的 SDK Manager 里 OpenHarmony 槽位为空没关系——Flutter-OH 会回退到已安装的 HarmonyOS SDK（其内部自带 `openharmony` 子系统，跑开源模拟器足够）。
+
+### 2. 关键修复：白屏根因
+
+`shared_preferences` 在 Flutter-OH 上**没有 ohos 平台实现**。若仅在 `dependency_overrides` 引入 `shared_preferences_ohos`，**不会生效**——Flutter-OH 的插件扫描只遍历 `package_graph.json` 的传递依赖闭包，override 没有依赖边，插件永远不被注册，运行期 `SharedPreferences.getInstance()` 抛 `MissingPluginException` → `runApp` 永不执行 → **永久白屏**。
+
+修复：把 `shared_preferences_ohos` 作为**真实 `dependencies`** 加入 `pubspec.yaml`（git 源 `openharmony-sig/flutter_packages`）。它是联邦 `implements: shared_preferences` 的 ohos-only 适配器，对官方 6 平台无操作。本仓库已修复。
+
+### 3. 构建与装机
+
+```bash
+flutter pub get
+flutter build hap --debug            # 产物: ohos/entry/build/default/outputs/default/entry-default-signed.hap
+hdc tconn 127.0.0.1:5555            # 连模拟器
+hdc install -r ohos/entry/build/default/outputs/default/entry-default-signed.hap
+hdc shell aa start -b com.andy.app_template -a EntryAbility
+```
+
+### 4. 验证（截图 / UI 自动化）
+
+```bash
+# 截图（后缀必须 .jpeg，设备端 /data/local/tmp 偶尔需重建）
+hdc shell mkdir -p /data/local/tmp
+hdc shell snapshot_display -f /data/local/tmp/shot.jpeg
+hdc file recv /data/local/tmp/shot.jpeg ~/Desktop/shot.jpeg
+# OpenHarmony 的 uitest 能看到 Flutter 语义树，可直接点按 widget
+hdc shell uitest dumpLayout -p /data/local/tmp/layout.json   # 找目标 Button 的 bounds
+hdc shell uitest uiInput click <x> <y>                       # 点按坐标
+```
+
+> 经验证：Counter / Profile / Articles 三个示例页在 OpenHarmony 模拟器上均能正常渲染（白屏修复后）。Articles 与 Profile 走同一套 remote→cache→mock 数据层（纯 Dart、零插件依赖、异常走 `Result/Failure` 兜底），不会因缺失平台插件而崩。
+
+### 5. 已知坑：ohpm safe-delete
+
+无 TTY 环境（CI / 沙箱）跑 `flutter build hap` 时，`ohpm install` 可能因「单次要删 >50 个文件需交互确认」而卡死（`[safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED]`）。有 TTY 的本地机器直接回车确认即可；非交互环境需清理 `ohos/oh_modules`（生成目录，未被 git 跟踪，可再生）后重新生成。
 
 - 签名 / 上传走 **AppGallery Connect（AGC）**，与 Apple 体系不同（`.p12` + `SigningConfig` + AGC API）。
 - 公共 CI 默认**不构建**鸿蒙（`.github/workflows/release.yml` 的 `ohos-release` job 设 `if: false`），需在自托管 runner 启用。
