@@ -1,0 +1,16 @@
+# Matchfile for Fastlane match — encrypted git storage for signing assets.
+# `match` keeps certificates & provisioning profiles in a private git repo so
+# every CI run and teammate gets identical, reproducible signing.
+#
+# Initialize once (locally):  bundle exec fastlane match init
+# Then sync for CI:          bundle exec fastlane match appstore --readonly
+
+git_url(ENV["MATCH_GIT_URL"] || "https://github.com/your-org/certs-repo.git")
+storage_mode("git")
+type("appstore") # profile type to sync: appstore | development | adhoc | enterprise
+app_identifier([ENV["IOS_APP_ID"] || "com.example.appTemplate"])
+username(ENV["APPLE_ID"] || "your-apple-id@example.com")
+
+# For CI, also provide:
+#   MATCH_PASSWORD                (repo decryption password)
+#   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD

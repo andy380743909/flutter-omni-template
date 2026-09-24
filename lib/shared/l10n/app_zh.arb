@@ -1,0 +1,9 @@
+{
+  "appTitle": "应用模板",
+  "counterTitle": "计数器",
+  "counterHint": "点击 + 开始计数。",
+  "counterValueLabel": "你已点击按钮这么多次：",
+  "increment": "增加",
+  "retry": "重试",
+  "errorOccurred": "出了点问题"
+}

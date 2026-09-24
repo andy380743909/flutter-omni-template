@@ -1,0 +1,9 @@
+{
+  "appTitle": "App Template",
+  "counterTitle": "Counter",
+  "counterHint": "Press + to start counting.",
+  "counterValueLabel": "You have pushed the button this many times:",
+  "increment": "Increment",
+  "retry": "Retry",
+  "errorOccurred": "Something went wrong"
+}

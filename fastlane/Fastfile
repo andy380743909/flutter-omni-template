@@ -1,0 +1,108 @@
+# Fastlane Fastfile — multi-platform release automation for the template.
+#
+# This file is the "release layer": it encodes versioning, packaging, signing
+# and store upload logic so it survives CI vendor changes. Run locally with
+# `bundle exec fastlane <platform> release`, or let `.github/workflows/release.yml`
+# invoke it on tag push.
+#
+# Secrets (never committed): use `.env`, GitHub Secrets, or your keychain.
+#   - iOS:  MATCH_GIT_URL, MATCH_PASSWORD, FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
+#   - Android: SUPPLY_JSON_KEY (Play Console service account JSON)
+#
+# HarmonyOS has NO Fastlane plugin. See the `ohos` lane (placeholder) which
+# shells out to the Flutter-OH toolchain (`flutter build hap`).
+
+default_platform(:android)
+
+# ---------------------------------------------------------------------------
+# Android
+# ---------------------------------------------------------------------------
+platform :android do
+  desc "Build a release AAB and upload it to the Play internal track"
+  lane :release do
+    sh("flutter pub get")
+    sh("flutter build appbundle --release")
+    upload_to_play_store(
+      track: "internal",
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end
+
+# ---------------------------------------------------------------------------
+# iOS
+# ---------------------------------------------------------------------------
+platform :ios do
+  desc "Sync certs/profiles (match), build IPA, upload to TestFlight"
+  lane :release do
+    setup_ci if ENV["CI"]
+    match(type: "appstore", readonly: true)
+    sh("flutter pub get")
+    sh("flutter build ios --release --no-codesign")
+    gym(scheme: "Runner", export_method: "app-store")
+    deliver(
+      submit_for_review: false,
+      automatic_release: false,
+      skip_screenshots: true,
+      skip_metadata: false
+    )
+    pilot
+  end
+end
+
+# ---------------------------------------------------------------------------
+# macOS
+# ---------------------------------------------------------------------------
+platform :macos do
+  desc "Build the macOS app (wrap as DMG for distribution)"
+  lane :release do
+    sh("flutter pub get")
+    sh("flutter build macos --release")
+    sh("mkdir -p build/releases")
+    sh("cp -R build/macos/Build/Products/Release/*.app build/releases/ || true")
+    UI.message("macOS build produced under build/releases; wrap with create-dmg.")
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Windows
+# ---------------------------------------------------------------------------
+platform :windows do
+  desc "Build the Windows executable (wrap with InnoSetup/NSIS)"
+  lane :release do
+    sh("flutter pub get")
+    sh("flutter build windows --release")
+    UI.message("Windows build produced under build/windows; wrap with InnoSetup/NSIS.")
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Linux
+# ---------------------------------------------------------------------------
+platform :linux do
+  desc "Build the Linux binary (wrap as AppImage)"
+  lane :release do
+    sh("flutter pub get")
+    sh("flutter build linux --release")
+    UI.message("Linux build produced under build/linux; wrap as AppImage.")
+  end
+end
+
+# ---------------------------------------------------------------------------
+# HarmonyOS (placeholder — Fastlane has no ohos plugin)
+# Requires the Flutter-OH SDK + DevEco toolchain on PATH.
+# ---------------------------------------------------------------------------
+platform :ohos do
+  desc "Build .hap via Flutter-OH (placeholder; requires Flutter-OH SDK)"
+  lane :release do
+    UI.important("HarmonyOS release requires the Flutter-OH SDK + DevEco.")
+    UI.important("Ensure the Flutter-OH 'flutter' is on PATH before continuing.")
+    sh("flutter pub get")
+    sh("flutter build hap --release")
+    UI.message("Generated .hap/.app — upload via AppGallery Connect API (agconnect CLI).")
+    UI.message("See docs/CI-CD.md for signing & distribution steps.")
+  end
+end

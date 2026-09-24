@@ -1,0 +1,17 @@
+# Analysis options for the Flutter app template.
+# Based on flutter_lints with a 100-character line length and a hard ban on
+# `print` in business code (use the Logger abstraction instead).
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    avoid_print: error
+  exclude:
+    - "**/*.g.dart"
+    - "lib/shared/l10n/generated/**"
+    - "build/**"
+    - "**/generated/**"
+    - ".dart_tool/**"
+
+# 100-character line length (Google-style / team convention).
+line_length: 100

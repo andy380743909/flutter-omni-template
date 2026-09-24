@@ -1,0 +1,19 @@
+# Appfile for Fastlane — per-platform identifiers & Apple ID.
+# Values fall back to placeholders; override via environment variables or your
+# own values. NEVER commit real secrets.
+
+for_platform :ios do
+  app_identifier(ENV["IOS_APP_ID"] || "com.example.appTemplate")
+  apple_id(ENV["APPLE_ID"] || "your-apple-id@example.com")
+  team_id(ENV["APPLE_TEAM_ID"] || "XXXXXXXXXX")
+end
+
+for_platform :android do
+  package_name(ENV["ANDROID_PACKAGE"] || "com.example.app_template")
+end
+
+# JSON key for Play Console upload (Android supply). Path to a file, not the
+# secret itself — keep the file out of version control (.gitignore covers it).
+for_platform :android do
+  json_key_file(ENV["SUPPLY_JSON_KEY_FILE"] || "./fastlane/play-key.json")
+end

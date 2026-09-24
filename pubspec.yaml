@@ -1,0 +1,59 @@
+name: app_template
+description: >-
+  A reusable, cross-platform Flutter application template. One Dart codebase
+  targets iOS, Android, HarmonyOS (Flutter-OH), Windows, macOS, Linux and Web.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management (Cubit / Bloc)
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+
+  # Dependency injection
+  get_it: ^7.7.0
+
+  # Networking
+  dio: ^5.4.0
+
+  # Key/value storage backend
+  shared_preferences: ^2.3.0
+
+  # Logging
+  logger: ^2.4.0
+
+  # Localization helpers (used by flutter gen-l10n)
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # End-to-end / integration testing SDK
+  integration_test:
+    sdk: flutter
+
+  # Lint rules
+  flutter_lints: ^4.0.0
+
+  # Test doubles (no code generation)
+  mocktail: ^1.0.0
+
+  # Cubit / Bloc test helpers
+  bloc_test: ^9.1.0
+
+  # System-level UI automation (permissions, deep links, share sheet)
+  patrol: ^3.0.0
+
+flutter:
+  # Generates l10n code (flutter_gen) automatically on `flutter pub get` / `flutter run`.
+  generate: true

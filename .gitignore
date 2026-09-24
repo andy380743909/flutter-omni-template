@@ -1,0 +1,54 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*.png
+linkcheck.sh
+test_coverage/
+
+# Generated localization artifacts
+lib/shared/l10n/generated/
+
+# Fastlane / secrets
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+fastlane/.env
+fastlane/.env.*
+.env
+*.json.key
+**/fastlane/metadata/**/copyright.txt
+
+# Local configuration
+.env.local
+secrets.yaml
+
+# Coverage
+coverage/
+
+# WorkBuddy session memory (AI assistant, not part of the app template)
+.workbuddy/

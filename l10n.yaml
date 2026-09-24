@@ -1,0 +1,9 @@
+# flutter gen-l10n configuration.
+# Source ARB files live in lib/shared/l10n. Generated code is produced into
+# .dart_tool/flutter_gen/gen_l10n and is imported as:
+#   import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+arb-dir: lib/shared/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
