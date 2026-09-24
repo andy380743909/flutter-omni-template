@@ -27,6 +27,19 @@ export PATH="$FLUTTER_ROOT/bin:$PATH"
 export PUB_CACHE="$PROJECT_ROOT/.pub-cache"
 unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
 
+# iOS SPM package resolution runs xcodebuild inside a process that is already
+# sandboxed (e.g. when invoked from a sandboxed agent/shell). macOS forbids
+# nested sandbox-exec, so xcodebuild's SPM manifest/package sandboxing fails
+# with "sandbox-exec: sandbox_apply: Operation not permitted".
+# The fix is NOT to disable SPM — it is to stop xcodebuild from nesting a
+# sandbox while keeping Swift Package Manager fully enabled:
+#   * the two Xcode user-defaults below (set globally; harmless on a normal Mac)
+#   * the two env vars tell SwiftPM / swift-build not to sandbox either.
+defaults write com.apple.dt.Xcode IDEPackageSupportDisableManifestSandbox -bool true 2>/dev/null || true
+defaults write com.apple.dt.Xcode IDEPackageSupportDisablePackageSandbox -bool true 2>/dev/null || true
+export SWIFTPM_DISABLE_SANDBOX=1
+export SWIFT_BUILD_USE_SANDBOX=0
+
 # Dispatch:
 #   `flutterw dart ...` -> dart SDK
 #   `flutterw sh -c '...'` / `flutterw env` -> run a shell with the env set

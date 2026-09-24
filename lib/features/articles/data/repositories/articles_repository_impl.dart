@@ -3,6 +3,7 @@ import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/articles/data/datasources/articles_local_datasource.dart';
 import 'package:app_template/features/articles/data/datasources/articles_remote_datasource.dart';
+import 'package:app_template/features/articles/data/datasources/articles_mock_datasource.dart';
 import 'package:app_template/features/articles/data/models/article_model.dart';
 import 'package:app_template/features/articles/data/models/articles_page_model.dart';
 import 'package:app_template/features/articles/domain/entities/articles_page.dart';
@@ -15,10 +16,12 @@ import 'package:app_template/features/articles/domain/repositories/articles_repo
 class ArticlesRepositoryImpl implements ArticlesRepository {
   final ArticlesRemoteDataSource remoteDataSource;
   final ArticlesLocalDataSource localDataSource;
+  final ArticlesMockDataSource mockDataSource;
 
   const ArticlesRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
+    this.mockDataSource = const ArticlesMockDataSource(),
   });
 
   @override
@@ -48,8 +51,12 @@ class ArticlesRepositoryImpl implements ArticlesRepository {
             );
           }
         } on CacheException {
-          // ignore, fall through to a network failure
+          // ignore, fall through to mock sample data
         }
+        // No cache available: serve mock sample articles so the UI has content.
+        return Result.success(
+          (await mockDataSource.getArticles(page)).toEntity(),
+        );
       }
       return Result.failure(
         NetworkFailure(message: 'No network and no cached articles.'),

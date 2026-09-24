@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.example.app_template",
+    "bundleName": "com.andy.app_template",
     "vendor": "example",
     "versionCode": 1000000,
     "versionName": "1.0.0",

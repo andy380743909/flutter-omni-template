@@ -28,13 +28,29 @@ dependencies:
   # Key/value storage backend
   shared_preferences: ^2.3.0
 
+  # OpenHarmony (Flutter-OH) platform adapter for shared_preferences.
+  # The pub.dev `shared_preferences` package ships no ohos endorsement, so on
+  # Flutter-OH `SharedPreferences.getInstance()` throws MissingPluginException
+  # during bootstrap -> runApp never runs -> blank white screen on the OH
+  # emulator. The OpenHarmony SIG maintains official ohos implementations of the
+  # federated plugins; pulling it in as a *real* dependency (not just an
+  # override) makes it reachable in the transitive closure so Flutter-OH's
+  # plugin scanner registers its method-call handler. It declares an `ohos`
+  # plugin platform only, so it is a harmless no-op on the six official
+  # platforms (iOS/Android/macOS/Linux/Windows/Web builds ignore it).
+  shared_preferences_ohos:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_packages.git
+      path: packages/shared_preferences/shared_preferences_ohos
+
   # Logging
   logger: ^2.4.0
 
   # Localization helpers (used by flutter gen-l10n).
-  # NOTE: Flutter 3.47.x's flutter_localizations (sdk) requires intl ^0.20.3,
-  # so this must stay >= 0.20.3 to resolve `flutter pub get`.
-  intl: ^0.20.3
+  # Pinned to ^0.20.2 to satisfy BOTH toolchains:
+  #  - standard Flutter 3.47 SDK's flutter_localizations needs intl >= 0.20.3 (resolves 0.20.3);
+  #  - Flutter-OH (OpenHarmony, ~3.35) SDK pins flutter_localizations to intl 0.20.2 (resolves 0.20.2).
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -57,5 +73,8 @@ dev_dependencies:
   patrol: ^3.0.0
 
 flutter:
+  # Bundles the Material Design icon font so `Icons.*` renders on device.
+  uses-material-design: true
+
   # Generates l10n code (flutter_gen) automatically on `flutter pub get` / `flutter run`.
   generate: true

@@ -3,6 +3,7 @@ import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/profile/data/datasources/profile_local_datasource.dart';
 import 'package:app_template/features/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:app_template/features/profile/data/datasources/profile_mock_datasource.dart';
 import 'package:app_template/features/profile/data/models/profile_model.dart';
 import 'package:app_template/features/profile/domain/entities/profile.dart';
 import 'package:app_template/features/profile/domain/repositories/profile_repository.dart';
@@ -14,10 +15,12 @@ import 'package:app_template/features/profile/domain/repositories/profile_reposi
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
   final ProfileLocalDataSource localDataSource;
+  final ProfileMockDataSource mockDataSource;
 
   const ProfileRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
+    this.mockDataSource = const ProfileMockDataSource(),
   });
 
   @override
@@ -36,11 +39,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
           return Result.success(cached.toEntity());
         }
       } on CacheException {
-        // ignore, fall through to a network failure
+        // ignore, fall through to mock sample data
       }
-      return Result.failure(
-        NetworkFailure(message: 'No network and no cached profile.'),
-      );
+      // No cache available: serve mock sample profile so the UI has content.
+      return Result.success((await mockDataSource.getProfile()).toEntity());
     } on CacheException catch (e) {
       return Result.failure(CacheFailure(message: e.message));
     } catch (e) {

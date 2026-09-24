@@ -1,15 +1,15 @@
+
 {
-  "apiType": "stage",
-  "buildOption": {},
-  "buildOptionSet": [
-    {
-      "name": "release",
-      "arkOptions": {
-        "obfuscation": { "ruleOptions": { "enable": false } }
-      }
-    }
-  ],
+  "apiType": 'stageMode',
+  "buildOption": {
+  },
   "targets": [
-    { "name": "default" }
+    {
+      "name": "default",
+      "runtimeOS": "HarmonyOS"
+    },
+    {
+      "name": "ohosTest",
+    }
   ]
 }

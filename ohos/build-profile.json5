@@ -5,14 +5,34 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storeFile": "REPLACE_WITH_your_store_file_path",
-          "storePassword": "REPLACE_WITH_store_password",
-          "keyAlias": "REPLACE_WITH_key_alias",
-          "keyPassword": "REPLACE_WITH_key_password",
+          "certpath": "/Users/andy/.ohos/config/default_ohos_z0e8w-XGLW2vbeoXqIrVBuSAaPwn0h5lm1-pghOT2B0=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001AB6F328828EE1285BB7440DB12318CB1E3764606958AB69DF24BC314CF4AE7E119EC216BE8E2F",
+          "profile": "/Users/andy/.ohos/config/default_ohos_z0e8w-XGLW2vbeoXqIrVBuSAaPwn0h5lm1-pghOT2B0=.p7b",
           "signAlg": "SHA256withECDSA",
-          "profileFile": "REPLACE_WITH_your_profile_file_path",
-          "certpath": "REPLACE_WITH_your_cert_file_path"
+          "storeFile": "/Users/andy/.ohos/config/default_ohos_z0e8w-XGLW2vbeoXqIrVBuSAaPwn0h5lm1-pghOT2B0=.p12",
+          "storePassword": "0000001A31BB2B5A2581CBF7D34E27C163E38B6C60BD81D7B44652D77DE74935706096F613AB39D0084B"
         }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.5(17)",
+        "targetSdkVersion": "26.0.0",
+        "runtimeOS": "HarmonyOS",
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "profile"
+      },
+      {
+        "name": "release"
       }
     ]
   },
@@ -21,7 +41,12 @@
       "name": "entry",
       "srcPath": "./entry",
       "targets": [
-        { "name": "default", "applyTo": "phone" }
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
       ]
     }
   ]

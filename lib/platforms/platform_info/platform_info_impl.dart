@@ -22,6 +22,14 @@ class PlatformInfoImpl implements PlatformInfo {
   PlatformInfoImpl() : _current = _resolveSync();
 
   /// Synchronously maps [defaultTargetPlatform] (web excluded).
+  ///
+  /// Note: Flutter-OH (the OpenHarmony/HarmonyOS Flutter fork) adds
+  /// [TargetPlatform.ohos] to the enum, which does not exist in the standard
+  /// Flutter SDK. To keep this file compilable under BOTH SDKs we avoid
+  /// referencing `TargetPlatform.ohos` literally and instead route any
+  /// unsupported value (only `ohos` under Flutter-OH) to [AppPlatform.ohos].
+  /// Under the standard SDK every platform is covered explicitly, so `default`
+  /// is never reached there.
   static AppPlatform _resolveSync() {
     if (kIsWeb) return AppPlatform.web;
     switch (defaultTargetPlatform) {
@@ -37,6 +45,8 @@ class PlatformInfoImpl implements PlatformInfo {
         return AppPlatform.linux;
       case TargetPlatform.fuchsia:
         return AppPlatform.android;
+      default:
+        return AppPlatform.ohos;
     }
   }
 
