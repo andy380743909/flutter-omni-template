@@ -22,6 +22,13 @@ class CounterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Counter'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person),
+            tooltip: 'Profile',
+            onPressed: () => Navigator.of(context).pushNamed('/profile'),
+          ),
+        ],
       ),
       body: BlocBuilder<CounterCubit, CounterState>(
         builder: (BuildContext context, CounterState state) {

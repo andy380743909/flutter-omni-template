@@ -92,17 +92,18 @@ platform :linux do
 end
 
 # ---------------------------------------------------------------------------
-# HarmonyOS (placeholder — Fastlane has no ohos plugin)
+# HarmonyOS (Fastlane has no ohos plugin — shell out to the Flutter-OH toolchain)
 # Requires the Flutter-OH SDK + DevEco toolchain on PATH.
 # ---------------------------------------------------------------------------
 platform :ohos do
-  desc "Build .hap via Flutter-OH (placeholder; requires Flutter-OH SDK)"
+  desc "Build .hap via Flutter-OH and upload to AppGallery Connect"
   lane :release do
     UI.important("HarmonyOS release requires the Flutter-OH SDK + DevEco.")
     UI.important("Ensure the Flutter-OH 'flutter' is on PATH before continuing.")
     sh("flutter pub get")
     sh("flutter build hap --release")
-    UI.message("Generated .hap/.app — upload via AppGallery Connect API (agconnect CLI).")
-    UI.message("See docs/CI-CD.md for signing & distribution steps.")
+    # Upload to AppGallery Connect (AGC REST API). Provide credentials via env
+    # (AGC_CLIENT_ID / AGC_CLIENT_SECRET / APP_ID) or a local, git-ignored .env.
+    sh("bash scripts/ohos_release.sh")
   end
 end

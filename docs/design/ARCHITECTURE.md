@@ -66,7 +66,7 @@ app_template/                                  # 模板工程根目录（用户�
 │   │   ├── config/
 │   │   │   └── app_config.dart                # 环境配置：apiBaseUrl、超时、开关等
 │   │   ├── usecases/
-│   │   │   └── usecase.dart                   # UseCase 基类（Future<Result<Failure,T>> call()）
+│   │   │   └── usecase.dart                   # UseCase 基类（Future<Result<T, Failure>> call()）
 │   │   └── platform/
 │   │       ├── app_platform.dart              # AppPlatform 枚举：android/ios/web/windows/macos/linux/ohos
 │   │       └── platform_info.dart             # PlatformInfo 解析（含 oh蒙 MethodChannel 占位）
@@ -317,7 +317,7 @@ final class FailureResult<S, F> extends Result<S, F> { final F failure; ... }
 
 ```dart
 abstract class UseCase<Type, Params> {
-  Future<Result<Failure, Type>> call(Params params);
+  Future<Result<Type, Failure>> call(Params params);
 }
 ```
 
@@ -366,7 +366,7 @@ abstract class UseCase<Type, Params> {
 | D1 | 架构 | Clean Architecture 变体 | 可测试、可替换、feature 解耦，适合「反复造 app」 |
 | D2 | 状态管理 | flutter_bloc（Cubit 为主） | 可测性最强，与 usecase 模型契合 |
 | D3 | DI | get_it 手动装配 | 零代码生成、易上手、运行时可控顺序 |
-| D4 | 错误模型 | Result<Failure,S> + Exception→Failure 转换 | 编译期强制处理失败，UI 只消费 state |
+| D4 | 错误模型 | Result<Type, Failure>（success-first）+ Exception→Failure 转换 | 编译期强制处理失败，UI 只消费 state |
 | D5 | 网络 | dio + HttpClient 抽象 | dio 成熟；抽象后便于 mock 与替换 |
 | D6 | 存储 | KeyValueStorage 接口 + shared_preferences 实现 | 接口共享，实现可换（secure_storage 等） |
 | D7 | 鸿蒙 | Flutter-OH + MethodChannel 平台识别 | 官方不支持，需独立 SDK 与可扩展解析 |

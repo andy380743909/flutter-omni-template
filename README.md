@@ -2,7 +2,7 @@
 
 一套 Dart 代码覆盖 **7 个平台**：iOS / Android / **HarmonyOS（鸿蒙, Flutter-OH）** / Windows / macOS / Linux / Web。
 
-基于 **Clean Architecture 变体** + `flutter_bloc`（Cubit）+ `get_it`（DI）+ `dio` + `shared_preferences`，强可测试、模式可复制。新建业务 app 时 `git clone` / 复制本仓库，把 `lib/features/counter` 换成你的 feature 即可。
+基于 **Clean Architecture 变体** + `flutter_bloc`（Cubit）+ `get_it`（DI）+ `dio` + `shared_preferences`，强可测试、模式可复制。新建业务 app 时 `git clone` / 复制本仓库，把 `lib/features/counter` 与 `lib/features/profile` 两个示例 feature 换成你的业务即可。
 
 > 这是**工程模板**，不含任何真实业务，只提供可运行的 App Shell 与完整模式示范。
 
@@ -20,7 +20,8 @@
 ├── lib/
 │   ├── main.dart / app/        # 入口与装配（bootstrap / MyApp / environment）
 │   ├── core/                   # 纯 Dart、平台无关、100% 可测
-│   ├── features/counter/       # 示例 feature（domain / data / presentation）
+│   ├── features/counter/       # 示例 feature：本地存储计数（domain / data / presentation）
+│   ├── features/profile/       # 示例 feature：网络+缓存（HttpClient/dio + KeyValueStorage）
 │   ├── shared/                 # 主题 / l10n / 通用 widget
 │   ├── platforms/              # per-platform 实现（storage / platform_info）
 │   └── di/                     # get_it 依赖注入装配
@@ -66,6 +67,8 @@ flutter run
 | Widget 测试 | `test_features/` | `flutter test test_features` |
 | 集成测试 | `integration_test/` | `flutter test integration_test` |
 | patrol UI 自动化 | `integration_test/counter_patrol_test.dart` | `patrol test integration_test/counter_patrol_test.dart` |
+
+> 本地真实验收清单（含本环境无 Flutter 的说明、各 feature 预期行为）见 [`docs/ACCEPTANCE.md`](docs/ACCEPTANCE.md)。
 
 或统一用 `make`：`make analyze` / `make test` / `make test-int` / `make ci`。
 

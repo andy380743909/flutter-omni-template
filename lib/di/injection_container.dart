@@ -14,6 +14,12 @@ import 'package:app_template/features/counter/domain/repositories/counter_reposi
 import 'package:app_template/features/counter/domain/usecases/get_counter.dart';
 import 'package:app_template/features/counter/domain/usecases/increment_counter.dart';
 import 'package:app_template/features/counter/presentation/state/counter_cubit.dart';
+import 'package:app_template/features/profile/data/datasources/profile_local_datasource.dart';
+import 'package:app_template/features/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:app_template/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:app_template/features/profile/domain/repositories/profile_repository.dart';
+import 'package:app_template/features/profile/domain/usecases/get_profile.dart';
+import 'package:app_template/features/profile/presentation/state/profile_cubit.dart';
 import 'package:app_template/platforms/platform_info/platform_info_impl.dart';
 import 'package:app_template/platforms/storage/shared_preferences_storage.dart';
 
@@ -67,5 +73,28 @@ Future<void> initDi() async {
       getCounter: sl(),
       incrementCounter: sl(),
     ),
+  );
+
+  // --- Feature: profile (data layer) ---------------------------------------
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(httpClient: sl()),
+  );
+  sl.registerLazySingleton<ProfileLocalDataSource>(
+    () => ProfileLocalDataSourceImpl(storage: sl()),
+  );
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
+  // --- Feature: profile (domain + presentation) ----------------------------
+  sl.registerLazySingleton<GetProfile>(
+    () => GetProfile(repository: sl()),
+  );
+  // A fresh Cubit is created per widget tree (factory, not singleton).
+  sl.registerFactory<ProfileCubit>(
+    () => ProfileCubit(getProfile: sl()),
   );
 }

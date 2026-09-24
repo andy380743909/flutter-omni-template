@@ -1,0 +1,6 @@
+{
+  "name": "app_template",
+  "version": "1.0.0",
+  "description": "Cross-platform Flutter template (HarmonyOS module)",
+  "dependencies": {}
+}

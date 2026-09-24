@@ -1,0 +1,28 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "storeFile": "REPLACE_WITH_your_store_file_path",
+          "storePassword": "REPLACE_WITH_store_password",
+          "keyAlias": "REPLACE_WITH_key_alias",
+          "keyPassword": "REPLACE_WITH_key_password",
+          "signAlg": "SHA256withECDSA",
+          "profileFile": "REPLACE_WITH_your_profile_file_path",
+          "certpath": "REPLACE_WITH_your_cert_file_path"
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        { "name": "default", "applyTo": "phone" }
+      ]
+    }
+  ]
+}
