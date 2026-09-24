@@ -27,6 +27,27 @@
 
 ---
 
+## 平台最低系统版本（重要）
+
+Flutter **每个平台都有最低系统版本限制，且会随 Flutter 升级而抬高**（3.47 刚把 iOS 最低从 13 升到 15、macOS 从 10.15 升到 12）。下表基于 Flutter **3.47.x** 官方支持矩阵：
+
+| 平台 | 最低版本 | 最高（3.47） | 架构 | 备注 |
+|------|----------|--------------|------|------|
+| **Android** | API 24（Android 7.0） | API 36/37（≈Android 16） | arm64 / x64 / arm32 | `minSdk` 默认 24；`targetSdk` 默认 36（Google Play 自 2026-08-31 强制 target 36） |
+| **iOS** | **iOS 15** | iOS 26 | **仅 arm64** | 3.47 把最低从 13 升到 15；CI 实测 18 与 26 |
+| **Windows** | Windows 10 | Windows 11 | x64 / arm64 | — |
+| **macOS** | **macOS 12 Monterey** | macOS 26 Tahoe | arm64 / x64 | **Intel x64 正被弃用**：警告将来变 error；建议 `flutter config --enable-macos-arm64-only` |
+| **Linux (Ubuntu)** | 20.04 LTS | 24.04 LTS | x64 / arm64 | 仅 LTS |
+| **Linux (Debian)** | 10 | 13 | x64 / arm64 | — |
+| **Web (Chrome/Edge)** | 最近 2 个大版本 | — | JS + **Wasm** | Wasm 正走向默认，需 `package:web` |
+| **Web (Safari)** | 15.6 | — | JS | — |
+| **Web (Firefox)** | 最近 2 个大版本 | — | JS only | — |
+| **HarmonyOS（鸿蒙）** | **API 12（5.0.0(12)）** | — | 见下 | 非官方 Flutter，需 Flutter-OH，版本分裂见"鸿蒙单独步骤" |
+
+> **⚠️ 测试机提醒（iPhone X 用户必读）**：Flutter 3.47 支持 iOS 15–26，你的 **iPhone X（iOS 16）仍在范围内、能跑**。但 iPhone X 的 A11 芯片**最高只能升到 iOS 16**——**若未来 Flutter 把最低要求抬到 iOS 17，iPhone X 会直接出局**。建议主力验收用 **iPhone 15（iOS 16 但可升 26）**，iPhone X 仅作老机型内存/性能压力测试。macOS/Web 同理受其最低版本钳制。
+
+---
+
 ## 目录结构（要点）
 
 ```
@@ -123,6 +144,8 @@ iOS 签名用 `match`：本地先 `bundle exec fastlane match init`，CI 配置 
 ---
 
 ## 鸿蒙（HarmonyOS）单独步骤
+
+> ⚠️ **版本分裂**：鸿蒙由 OpenHarmony SIG 社区维护的 Flutter-OH 提供，**版本号与官方 Flutter 不对应、且落后**（官方 3.47 无鸿蒙版，社区最新约 3.35.7dev）。HarmonyOS NEXT 需 **API 12（5.0.0(12)）及以上**，请用 `3.22.0-ohos` 等社区稳定版，**勿复用本模板钉的官方 `3.47.5`**。详见 `docs/CI-CD.md`。
 
 鸿蒙**不在**官方 Flutter 之内，需 `flutter create` 之外的独立流程（且需要 Flutter-OH SDK 环境）：
 

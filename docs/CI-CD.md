@@ -89,9 +89,15 @@ bundle exec fastlane linux release   # 打包 Linux，自行套 AppImage
 
 ## HarmonyOS（鸿蒙）发布步骤
 
+> ⚠️ **版本分裂（重要）**：鸿蒙由 OpenHarmony SIG 社区用 `flutter_flutter` 分支单独维护，**版本号与官方 Flutter 不对应、且明显落后**。官方 Flutter 3.47.x 在鸿蒙上**不可用**。鸿蒙需另装独立的 Flutter-OH SDK，并钉到对应社区版本：
+> - HarmonyOS NEXT 要求 **API 12（5.0.0(12)）及以上**。
+> - 社区稳定版：`3.7.12-ohos`、`3.22.0-ohos`（HarmonyOS NEXT 推荐，支持 API 11/12+）、`3.27.4-ohos`。
+> - 社区预览版到 `3.35.7dev` 左右，**尚无 3.47 对应版**。
+> - 因此本模板 CI 钉的官方 `3.47.5` **不适用于鸿蒙**；鸿蒙链路请单独钉 `3.22.0-ohos` 之类，与官方 Flutter 是两套平行 SDK，需各自维护。
+
 Fastlane **没有**鸿蒙插件，鸿蒙链路完全独立：
 
-1. **准备环境**：安装 [Flutter-OH](https://gitcode.com/openharmony-sig/flutter_flutter)（鸿蒙适配版 Flutter）+ DevEco Studio。把 Flutter-OH 的 `flutter` 放到 `PATH`。
+1. **准备环境**：安装 [Flutter-OH](https://gitcode.com/openharmony-sig/flutter_flutter)（鸿蒙适配版 Flutter）+ DevEco Studio。把 Flutter-OH 的 `flutter` 放到 `PATH`（注意这是**另一套** Flutter，与官方 3.47.5 并存，靠 `PATH` 切换）。
 2. **生成 ohos 工程**（只需一次，且需 Flutter-OH 环境，不在官方 `flutter create` 之列）：
    ```bash
    flutter create --platforms=ohos .
