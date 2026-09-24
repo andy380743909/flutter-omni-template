@@ -20,6 +20,12 @@ import 'package:app_template/features/profile/data/repositories/profile_reposito
 import 'package:app_template/features/profile/domain/repositories/profile_repository.dart';
 import 'package:app_template/features/profile/domain/usecases/get_profile.dart';
 import 'package:app_template/features/profile/presentation/state/profile_cubit.dart';
+import 'package:app_template/features/articles/data/datasources/articles_local_datasource.dart';
+import 'package:app_template/features/articles/data/datasources/articles_remote_datasource.dart';
+import 'package:app_template/features/articles/data/repositories/articles_repository_impl.dart';
+import 'package:app_template/features/articles/domain/repositories/articles_repository.dart';
+import 'package:app_template/features/articles/domain/usecases/get_articles.dart';
+import 'package:app_template/features/articles/presentation/state/articles_cubit.dart';
 import 'package:app_template/platforms/platform_info/platform_info_impl.dart';
 import 'package:app_template/platforms/storage/shared_preferences_storage.dart';
 
@@ -96,5 +102,28 @@ Future<void> initDi() async {
   // A fresh Cubit is created per widget tree (factory, not singleton).
   sl.registerFactory<ProfileCubit>(
     () => ProfileCubit(getProfile: sl()),
+  );
+
+  // --- Feature: articles (data layer) --------------------------------------
+  sl.registerLazySingleton<ArticlesRemoteDataSource>(
+    () => ArticlesRemoteDataSourceImpl(httpClient: sl()),
+  );
+  sl.registerLazySingleton<ArticlesLocalDataSource>(
+    () => ArticlesLocalDataSourceImpl(storage: sl()),
+  );
+  sl.registerLazySingleton<ArticlesRepository>(
+    () => ArticlesRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
+  // --- Feature: articles (domain + presentation) ---------------------------
+  sl.registerLazySingleton<GetArticles>(
+    () => GetArticles(repository: sl()),
+  );
+  // A fresh Cubit is created per widget tree (factory, not singleton).
+  sl.registerFactory<ArticlesCubit>(
+    () => ArticlesCubit(getArticles: sl()),
   );
 }

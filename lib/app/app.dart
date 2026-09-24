@@ -8,6 +8,8 @@ import 'package:app_template/features/counter/presentation/pages/counter_page.da
 import 'package:app_template/features/counter/presentation/state/counter_cubit.dart';
 import 'package:app_template/features/profile/presentation/pages/profile_page.dart';
 import 'package:app_template/features/profile/presentation/state/profile_cubit.dart';
+import 'package:app_template/features/articles/presentation/pages/articles_page.dart';
+import 'package:app_template/features/articles/presentation/state/articles_cubit.dart';
 import 'package:app_template/shared/theme/app_theme.dart';
 
 /// Root widget for the application.
@@ -40,6 +42,10 @@ class MyApp extends StatelessWidget {
         ProfilePage.routeName: (_) => BlocProvider<ProfileCubit>(
               create: (_) => di.sl<ProfileCubit>()..loadProfile(),
               child: const ProfilePage(),
+            ),
+        ArticlesPage.routeName: (_) => BlocProvider<ArticlesCubit>(
+              create: (_) => di.sl<ArticlesCubit>()..loadFirstPage(),
+              child: const ArticlesPage(),
             ),
       },
     );

@@ -28,6 +28,11 @@ class CounterPage extends StatelessWidget {
             tooltip: 'Profile',
             onPressed: () => Navigator.of(context).pushNamed('/profile'),
           ),
+          IconButton(
+            icon: const Icon(Icons.article),
+            tooltip: 'Articles',
+            onPressed: () => Navigator.of(context).pushNamed('/articles'),
+          ),
         ],
       ),
       body: BlocBuilder<CounterCubit, CounterState>(

@@ -9,12 +9,8 @@ import 'package:app_template/features/counter/presentation/pages/counter_page.da
 import 'package:app_template/features/counter/presentation/state/counter_cubit.dart';
 import 'package:app_template/features/counter/presentation/state/counter_state.dart';
 
-class MockCounterCubit extends MockCubit<CounterState> implements CounterCubit {
-  @override
-  Future<void> loadCounter() => Future.value();
-  @override
-  Future<void> increment() => Future.value();
-}
+class MockCounterCubit extends MockCubit<CounterState>
+    implements CounterCubit {}
 
 void main() {
   late MockCounterCubit cubit;
@@ -33,7 +29,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
   }
 
   testWidgets('shows the start hint when state is initial', (

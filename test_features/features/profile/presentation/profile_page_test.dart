@@ -9,10 +9,8 @@ import 'package:app_template/features/profile/presentation/pages/profile_page.da
 import 'package:app_template/features/profile/presentation/state/profile_cubit.dart';
 import 'package:app_template/features/profile/presentation/state/profile_state.dart';
 
-class MockProfileCubit extends MockCubit<ProfileState> implements ProfileCubit {
-  @override
-  Future<void> loadProfile() => Future.value();
-}
+class MockProfileCubit extends MockCubit<ProfileState>
+    implements ProfileCubit {}
 
 void main() {
   late MockProfileCubit cubit;
@@ -31,7 +29,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
   }
 
   const UserProfile profile = UserProfile(
