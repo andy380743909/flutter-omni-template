@@ -6,4 +6,8 @@ arb-dir: lib/shared/l10n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 output-class: AppLocalizations
+# Generated l10n code is written here (git-ignored) and imported as a normal
+# package import — see lib/app/app.dart. Using an explicit output-dir avoids the
+# fragile `flutter_gen` synthetic package resolution.
+output-dir: lib/shared/l10n/generated
 nullable-getter: false

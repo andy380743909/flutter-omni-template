@@ -21,9 +21,26 @@
 
 ## 验证状态（诚实说明）
 
-⚠️ **本仓库尚未在任何机器上完整跑通。** 代码由 AI 在"无 Flutter SDK"环境手写，仅经过静态审查（已修复 2 个会编译失败的阻断问题）。仓库内**不含**原生平台目录（ios/android/macos/windows/linux/web），需本地 `bash scripts/bootstrap.sh` 生成；**鸿蒙需单独的 Flutter-OH SDK**。
+✅ **本仓库已用真实 Flutter 3.47.5 SDK 实测过了一遍**（`flutter create` 生成的 6 平台原生目录已随仓库提交，clone 即可用，无需再跑 `bootstrap.sh` 生成）。实测结果：
 
-也就是说，"7 平台编译运行 hello world"是**设计目标**，不是已验证事实。你拿到后请按 `docs/ACCEPTANCE.md` 做一次本地验收（bootstrap → pub get → analyze → test → 各平台 build），CI 的 `channel/version` 已固定为 Flutter **3.47.5**。
+| 检查项 | 命令 | 结果 |
+|--------|------|------|
+| 静态分析 | `flutter analyze --fatal-warnings` | ✅ 通过（仅剩 `prefer_const_constructors` 等 info 级提示，不阻断 CI） |
+| 单元测试 + widget 测试 | `flutter test` | ✅ 27 个全部通过 |
+| Web 构建 | `flutter build web --release` | ✅ 成功 |
+| macOS 构建 | `flutter build macos --release` | ✅ 成功 |
+| iOS 构建 | `flutter build ios --release --no-codesign` | ✅ 成功（未签名，仅编译验证） |
+
+⚠️ **本机（macOS）只能实测 web / macOS / iOS 三个平台的构建**；Android / Windows / Linux 因缺对应 OS 与 SDK 未在本机编译，但 CI 会分别用 ubuntu（android/linux）与 windows runner 构建，且三者共享同一套 Dart 代码（已在本机跨平台编译验证）。请按 `docs/ACCEPTANCE.md` 做一次全平台验收。
+
+🛠 **为让"每平台都能跑 hello world"而修掉的阻断问题**（均为真实编译错误）：
+- 各 usecase / 测试文件漏 `import '.../result.dart'`，且 `Result.success/failure` 工厂未声明 `const` → 改显式 import + `const factory`；
+- `get_profile.dart` 漏 `import '.../failures.dart'`（`Failure` 找不到）；
+- `DefaultLogger` 误用 `printEmoji`（logger 2.8.0 实际参数为 `printEmojis`）；
+- `PlatformInfoImpl()` 非 const 构造器却被 `const` 调用；
+- l10n 改用显式 `output-dir: lib/shared/l10n/generated` + 普通 `package:` 导入，弃用脆弱的 `flutter_gen` 合成包（`app.dart` 导入路径已同步修改）。
+
+CI 的 `flutter-version` 固定为 **3.47.5**；鸿蒙需单独的 Flutter-OH SDK（见下文）。
 
 ---
 

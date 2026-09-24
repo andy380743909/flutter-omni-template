@@ -35,7 +35,7 @@ class DefaultLogger implements Logger {
                 errorMethodCount: 8,
                 lineLength: 100,
                 colors: true,
-                printEmoji: false,
+                printEmojis: false,
               ),
             );
 

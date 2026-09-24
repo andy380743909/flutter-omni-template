@@ -18,17 +18,21 @@ default_platform(:android)
 # Android
 # ---------------------------------------------------------------------------
 platform :android do
-  desc "Build a release AAB and upload it to the Play internal track"
+  desc "Build a release AAB; upload to Play internal track when SUPPLY_JSON_KEY is set"
   lane :release do
     sh("flutter pub get")
     sh("flutter build appbundle --release")
-    upload_to_play_store(
-      track: "internal",
-      aab: "../build/app/outputs/bundle/release/app-release.aab",
-      skip_upload_metadata: false,
-      skip_upload_images: true,
-      skip_upload_screenshots: true
-    )
+    if ENV["SUPPLY_JSON_KEY"] && !ENV["SUPPLY_JSON_KEY"].to_s.strip.empty?
+      upload_to_play_store(
+        track: "internal",
+        aab: "../build/app/outputs/bundle/release/app-release.aab",
+        skip_upload_metadata: false,
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+      )
+    else
+      UI.important("SUPPLY_JSON_KEY not set — skipping Play Store upload (build only).")
+    end
   end
 end
 
@@ -36,20 +40,25 @@ end
 # iOS
 # ---------------------------------------------------------------------------
 platform :ios do
-  desc "Sync certs/profiles (match), build IPA, upload to TestFlight"
+  desc "Build the iOS app. With MATCH_GIT_URL set, sync certs and upload to TestFlight; otherwise build --no-codesign for verification."
   lane :release do
     setup_ci if ENV["CI"]
-    match(type: "appstore", readonly: true)
     sh("flutter pub get")
-    sh("flutter build ios --release --no-codesign")
-    gym(scheme: "Runner", export_method: "app-store")
-    deliver(
-      submit_for_review: false,
-      automatic_release: false,
-      skip_screenshots: true,
-      skip_metadata: false
-    )
-    pilot
+    if ENV["MATCH_GIT_URL"] && !ENV["MATCH_GIT_URL"].to_s.strip.empty?
+      match(type: "appstore", readonly: true)
+      sh("flutter build ios --release")
+      gym(scheme: "Runner", export_method: "app-store")
+      deliver(
+        submit_for_review: false,
+        automatic_release: false,
+        skip_screenshots: true,
+        skip_metadata: false
+      )
+      pilot
+    else
+      UI.important("MATCH_GIT_URL not set — building iOS without code signing (verification only).")
+      sh("flutter build ios --release --no-codesign")
+    end
   end
 end
 

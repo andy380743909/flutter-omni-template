@@ -3,6 +3,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/usecases/usecase.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/counter/domain/entities/counter.dart';
 import 'package:app_template/features/counter/domain/repositories/counter_repository.dart';
 import 'package:app_template/features/counter/domain/usecases/get_counter.dart';
@@ -27,7 +28,8 @@ void main() {
         (_) async => const Result<Counter, Failure>.success(Counter(value: 5)),
       );
 
-      final Result<Counter, Failure> result = await getCounter(const NoParams());
+      final Result<Counter, Failure> result =
+          await getCounter(const NoParams());
 
       expect(result.isSuccess, isTrue);
       expect(result.successOrNull, const Counter(value: 5));
@@ -40,7 +42,8 @@ void main() {
             Result<Counter, Failure>.failure(CacheFailure(message: 'boom')),
       );
 
-      final Result<Counter, Failure> result = await getCounter(const NoParams());
+      final Result<Counter, Failure> result =
+          await getCounter(const NoParams());
 
       expect(result.isFailure, isTrue);
       expect(result.failureOrNull, isA<CacheFailure>());

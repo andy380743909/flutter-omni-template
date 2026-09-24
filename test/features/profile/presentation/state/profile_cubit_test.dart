@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/usecases/usecase.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/profile/domain/entities/profile.dart';
 import 'package:app_template/features/profile/domain/usecases/get_profile.dart';
 import 'package:app_template/features/profile/presentation/state/profile_cubit.dart';

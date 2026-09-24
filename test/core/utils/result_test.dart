@@ -29,7 +29,8 @@ void main() {
         2,
       );
       expect(
-        err.fold(onSuccess: (int v) => v * 2, onFailure: (String f) => f.length),
+        err.fold(
+            onSuccess: (int v) => v * 2, onFailure: (String f) => f.length),
         1,
       );
     });

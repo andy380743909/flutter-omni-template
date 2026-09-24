@@ -21,8 +21,7 @@ extension NumExtension on num {
 /// Extensions on [DateTime].
 extension DateTimeExtension on DateTime {
   /// Returns an ISO-8601-ish `yyyy-MM-dd` representation.
-  String get toDateString =>
-      '$year-${_pad(month)}-${_pad(day)}';
+  String get toDateString => '$year-${_pad(month)}-${_pad(day)}';
 
   String _pad(int value) => value.toString().padLeft(2, '0');
 }

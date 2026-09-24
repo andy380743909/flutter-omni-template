@@ -15,10 +15,10 @@ sealed class Result<S, F> {
   const Result();
 
   /// Creates a successful result holding [value].
-  factory Result.success(S value) = Success<S, F>;
+  const factory Result.success(S value) = Success<S, F>;
 
   /// Creates a failed result holding [failure].
-  factory Result.failure(F failure) = FailureResult<S, F>;
+  const factory Result.failure(F failure) = FailureResult<S, F>;
 
   /// Whether this is a [Success].
   bool get isSuccess => this is Success<S, F>;
@@ -53,8 +53,7 @@ final class Success<S, F> extends Result<S, F> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Success<S, F> && other.value == value;
+      identical(this, other) || other is Success<S, F> && other.value == value;
 
   @override
   int get hashCode => value.hashCode;

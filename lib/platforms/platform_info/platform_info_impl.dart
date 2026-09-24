@@ -66,8 +66,7 @@ class PlatformInfoImpl implements PlatformInfo {
     // Web can never be HarmonyOS.
     if (kIsWeb) return;
     try {
-      final bool? isOhos =
-          await _platformChannel.invokeMethod<bool>('is_ohos');
+      final bool? isOhos = await _platformChannel.invokeMethod<bool>('is_ohos');
       if (isOhos == true) {
         _current = AppPlatform.ohos;
       }

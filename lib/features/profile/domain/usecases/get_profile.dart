@@ -1,3 +1,5 @@
+import 'package:app_template/core/errors/failures.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/core/usecases/usecase.dart';
 import 'package:app_template/features/profile/domain/entities/profile.dart';
 import 'package:app_template/features/profile/domain/repositories/profile_repository.dart';

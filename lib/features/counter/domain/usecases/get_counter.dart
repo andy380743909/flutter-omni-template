@@ -1,4 +1,5 @@
 import 'package:app_template/core/errors/failures.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/core/usecases/usecase.dart';
 import 'package:app_template/features/counter/domain/entities/counter.dart';
 import 'package:app_template/features/counter/domain/repositories/counter_repository.dart';

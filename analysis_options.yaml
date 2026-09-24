@@ -12,6 +12,12 @@ analyzer:
     - "build/**"
     - "**/generated/**"
     - ".dart_tool/**"
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 # 100-character line length (Google-style / team convention).
 line_length: 100

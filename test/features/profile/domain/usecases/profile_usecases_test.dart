@@ -3,6 +3,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/usecases/usecase.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/profile/domain/entities/profile.dart';
 import 'package:app_template/features/profile/domain/repositories/profile_repository.dart';
 import 'package:app_template/features/profile/domain/usecases/get_profile.dart';

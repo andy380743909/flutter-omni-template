@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app_template/shared/l10n/generated/app_localizations.dart';
 
 import 'package:app_template/di/injection_container.dart' as di;
 import 'package:app_template/features/counter/presentation/pages/counter_page.dart';

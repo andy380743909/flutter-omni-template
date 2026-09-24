@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:app_template/core/errors/failures.dart';
 import 'package:app_template/core/usecases/usecase.dart';
+import 'package:app_template/core/utils/result.dart';
 import 'package:app_template/features/counter/domain/entities/counter.dart';
 import 'package:app_template/features/counter/domain/usecases/get_counter.dart';
 import 'package:app_template/features/counter/domain/usecases/increment_counter.dart';

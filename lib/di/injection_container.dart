@@ -50,7 +50,7 @@ Future<void> initDi() async {
       ),
     ),
   );
-  sl.registerLazySingleton<PlatformInfo>(() => const PlatformInfoImpl());
+  sl.registerLazySingleton<PlatformInfo>(() => PlatformInfoImpl());
 
   // --- Feature: counter (data layer) --------------------------------------
   sl.registerLazySingleton<CounterLocalDataSource>(
