@@ -101,16 +101,15 @@ Flutter **每个平台都有最低系统版本限制，且会随 Flutter 升级�
 
 ---
 
-## 用户本地首次运行（三条命令）
+## 用户本地首次运行（两条命令）
+
+> 6 个官方平台的原生目录（`android/` `ios/` `macos/` `windows/` `linux/` `web/`）**已随仓库提交**，clone 下来即可用，无需再跑 `bootstrap.sh`。（`bootstrap.sh` 仅在你想新增平台或重建原生目录时才需要。）
 
 ```bash
-# 1. 生成 6 平台原生目录（ios/android/windows/macos/linux/web）
-bash scripts/bootstrap.sh
-
-# 2. 拉取依赖（同时自动生成 l10n 代码）
+# 1. 拉取依赖（同时自动生成 l10n 代码）
 flutter pub get
 
-# 3. 启动应用
+# 2. 启动应用
 flutter run
 ```
 
@@ -215,25 +214,43 @@ cd my_new_app
 rm -rf .git && git init && git add -A && git commit -m "chore: init from app_template"
 
 # 方式 B：作为 GitHub Template（在 GitHub 点 "Use this template"），clone 后同上
-
-# 重新生成原生平台目录（保留 lib/ 与配置，只重铺 ios/android/...）
-bash scripts/bootstrap.sh
+#   平台原生目录已随模板提交，无需 bootstrap；直接：
 flutter pub get
 ```
 
-### 2. 改包名（关键，必须做）
+> 平台原生目录（`android/` `ios/` `macos/` `windows/` `linux/` `web/`）已随模板提交，clone 即可运行。`scripts/bootstrap.sh` 仅在新增平台或误删原生目录时用于重建。
 
-模板的 Dart 包名是 `app_template`，所有 `import 'package:app_template/...'` 都依赖它。新 app 改名用全量替换：
+### 2. 改包名与原生标识符（关键，必须做）
+
+新 app 至少要改两处：**Dart 包名** + **各平台原生 bundle id / applicationId**（不改则上架会被拒，且多个 app 会撞 id）。**推荐直接用脚本一键完成**：
 
 ```bash
-# 把 app_template 改成你的包名（例如 my_new_app），需同步改 pubspec.yaml 的 name
+# new_dart_package: 小写蛇形，如 my_new_app；new_bundle_id: 反域名，如 com.mycompany.myapp
+bash scripts/rename_app.sh my_new_app com.mycompany.myapp
+flutter pub get
+```
+
+脚本会替换：① 所有 `package:app_template/` import；② `pubspec.yaml` 的 `name`；③ 各平台 `com.example.app_template` / `com.example.appTemplate` → 你的 bundle id（`android/` `ios/` `macos/` `windows/` `linux/` `ohos/` + `fastlane/`）。
+
+**仍需手动处理（脚本无法安全代劳）**：
+- Android：把 `android/app/src/main/kotlin/com/example/app_template/` 目录移动到与包名对应的路径（如 `.../kotlin/com/mycompany/myapp/`），并改 `MainActivity.kt` 里的 `package` 声明。本地开发不移动也能跑，但上架 Google Play 要求路径一致。
+- 各平台图标、`android:label` / `CFBundleDisplayName` / 窗口标题等按需替换。
+
+<details><summary>想手动改？下面是等价命令</summary>
+
+```bash
 OLD=app_template NEW=my_new_app
 sed -i '' "s/package:$OLD\//package:$NEW\//g" $(grep -rl "package:$OLD/" lib test test_features integration_test)
 sed -i '' "s/^name: $OLD/name: $NEW/" pubspec.yaml
-flutter pub get      # 校验 import 全部解析成功
+# 原生 bundle id（com.example.app_template 与 com.example.appTemplate 两种写法）
+find android ios macos windows linux ohos fastlane -type f \
+  -exec sed -i '' -e 's/com\.example\.app_template/YOUR_BUNDLE_ID/g' \
+                  -e 's/com\.example\.appTemplate/YOUR_BUNDLE_ID/g' {} +
 ```
 
-> 鸿蒙 `ohos/` 目录是 `flutter create --platforms=ohos` 单独生成的，里面的包名/签名需按 AGC 工程另行配置，不在此 sed 范围内。
+</details>
+
+> 鸿蒙 `ohos/` 目录的 `bundleName` 也会被上面的脚本一并替换；签名仍需按 AppGallery Connect 工程另行配置。
 
 ### 3. 替换示例 feature
 
