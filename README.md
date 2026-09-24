@@ -8,6 +8,25 @@
 
 ---
 
+## 定位与边界（请先读）
+
+| 它是… | 它不是… |
+|------|---------|
+| **模板 / App Shell**：你 copy 它作为新项目的起点 | 一个 clone 即跑的 **demo**（需先 bootstrap + 装 Flutter） |
+| 一套**已搭好的工程约定**：目录分层、DI、状态管理、三层测试、CI、Fastlane | 一个包含真实业务逻辑的成品 App |
+| 面向**已会 Flutter** 的开发者，省去每次重搭脚手架 | 面向初学者的教学项目 |
+
+> **适用人群**：已决定用 Flutter、想要"干净架构 + 可测试 + 多平台 + 发布流水线"开箱即用的独立开发者 / 小团队。
+> **不适用**：一次性小工具、不想接受这套目录/状态管理约定的项目、纯学习 Flutter 的新手（先用官方 `flutter create` 更合适）。
+
+## 验证状态（诚实说明）
+
+⚠️ **本仓库尚未在任何机器上完整跑通。** 代码由 AI 在"无 Flutter SDK"环境手写，仅经过静态审查（已修复 2 个会编译失败的阻断问题）。仓库内**不含**原生平台目录（ios/android/macos/windows/linux/web），需本地 `bash scripts/bootstrap.sh` 生成；**鸿蒙需单独的 Flutter-OH SDK**。
+
+也就是说，"7 平台编译运行 hello world"是**设计目标**，不是已验证事实。你拿到后请按 `docs/ACCEPTANCE.md` 做一次本地验收（bootstrap → pub get → analyze → test → 各平台 build），CI 的 `channel/version` 已固定为 Flutter **3.47.5**。
+
+---
+
 ## 目录结构（要点）
 
 ```
